@@ -1,0 +1,17 @@
+{
+    "configurations": [
+        {
+            "type": "java",
+            "name": "Debug (Launch) - Current File",
+            "request": "launch",
+            "mainClass": "${file}"
+        },
+        {
+            "type": "java",
+            "name": "Debug (Launch)-DOMParser<Procesamiento RSS_ae170d39>",
+            "request": "launch",
+            "mainClass": "DOM.DOMParser",
+            "projectName": "Procesamiento RSS_ae170d39"
+        }
+    ]
+}
