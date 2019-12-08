@@ -1,8 +1,15 @@
 package DOM;
 
 import java.io.File;
+import java.io.FileWriter;
 import java.io.IOException;
 import java.net.URL;
+import java.nio.charset.StandardCharsets;
+import java.nio.file.Files;
+import java.nio.file.Paths;
+import java.util.stream.Stream;
+
+import org.json.*;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.NodeList;
@@ -71,6 +78,7 @@ class DOMParser {
             }
 
             generateXMLFile(outputDoc, "DOM/noticias_" + channelTitle + ".xml");
+            getXMLfromJson("DOM/noticias_" + channelTitle);
         } catch (SAXException | IOException | ParserConfigurationException e) {
             e.printStackTrace();
         }
@@ -85,10 +93,35 @@ class DOMParser {
             transformer.setOutputProperty(OutputKeys.VERSION, "1.0");
             transformer.setOutputProperty(OutputKeys.ENCODING, "UTF-8");
             transformer.setOutputProperty(OutputKeys.STANDALONE, "yes");
-            transformer.setOutputProperty(OutputKeys.DOCTYPE_SYSTEM, "fich.dtd");
             transformer.setOutputProperty(OutputKeys.INDENT, "yes");
             transformer.transform(new DOMSource(doc), new StreamResult(new File(filename)));
         } catch (TransformerException e) {
+            e.printStackTrace();
+        }
+    }
+
+    private static void getXMLfromJson(String filename) {
+
+        StringBuilder contentBuilder = new StringBuilder();
+        try (Stream<String> stream = Files.lines(Paths.get(filename + ".xml"), StandardCharsets.UTF_8)) {
+            stream.forEach(s -> contentBuilder.append(s).append("\n"));
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        String XML = contentBuilder.toString();
+
+        try {
+            JSONObject xmlJSONObj = JSONML.toJSONObject(XML);
+
+            try (FileWriter file = new FileWriter(filename + ".json")) {
+ 
+                file.write(xmlJSONObj.toString());
+                file.flush();
+     
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        } catch (JSONException  e) {
             e.printStackTrace();
         }
     }

@@ -2,6 +2,13 @@
     "configurations": [
         {
             "type": "java",
+            "name": "CodeLens (Launch) - DOMParser",
+            "request": "launch",
+            "mainClass": "DOM.DOMParser",
+            "projectName": "Procesamiento RSS_9c462cd8"
+        },
+        {
+            "type": "java",
             "name": "Debug (Launch) - Current File",
             "request": "launch",
             "mainClass": "${file}"
