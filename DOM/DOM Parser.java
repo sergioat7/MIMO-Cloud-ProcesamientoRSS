@@ -12,6 +12,7 @@ import java.util.stream.Stream;
 import org.json.*;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
+import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 
 import javax.xml.parsers.DocumentBuilder;
@@ -55,26 +56,31 @@ class DOMParser {
                     "Descripcion canal:" + channelNode.getElementsByTagName("description").item(0).getTextContent());
 
             NodeList items = channelNode.getElementsByTagName("item");
+            Node currentNode;
             Element currentItem;
             for (int i = 0; i < items.getLength(); i++) {
 
-                currentItem = (Element) items.item(i);
-                int id = i + 1;
-                String newsTitle = currentItem.getElementsByTagName("title").item(0).getTextContent();
+                currentNode = items.item(i);
 
-                Element news = outputDoc.createElement("noticia");
-                channelNews.appendChild(news);
-                news.appendChild(outputDoc.createTextNode(newsTitle));
+                if (currentNode.getNodeType() == Node.ELEMENT_NODE) {
+                    currentItem = (Element) items.item(i);
+                    int id = i + 1;
+                    String newsTitle = currentItem.getElementsByTagName("title").item(0).getTextContent();
 
-                System.out.println("Noticia " + id);
-                System.out.println("   Titulo:" + newsTitle);
-                System.out.println("   URL:" + currentItem.getElementsByTagName("link").item(0).getTextContent());
-                System.out.println(
-                        "   Descripcion:" + currentItem.getElementsByTagName("description").item(0).getTextContent());
-                System.out.println("   Fecha de publicacion:"
-                        + currentItem.getElementsByTagName("pubDate").item(0).getTextContent());
-                System.out.println(
-                        "   Categoria:" + currentItem.getElementsByTagName("category").item(0).getTextContent());
+                    Element news = outputDoc.createElement("noticia");
+                    channelNews.appendChild(news);
+                    news.appendChild(outputDoc.createTextNode(newsTitle));
+
+                    System.out.println("Noticia " + id);
+                    System.out.println("   Titulo:" + newsTitle);
+                    System.out.println("   URL:" + currentItem.getElementsByTagName("link").item(0).getTextContent());
+                    System.out.println("   Descripcion:"
+                            + currentItem.getElementsByTagName("description").item(0).getTextContent());
+                    System.out.println("   Fecha de publicacion:"
+                            + currentItem.getElementsByTagName("pubDate").item(0).getTextContent());
+                    System.out.println(
+                            "   Categoria:" + currentItem.getElementsByTagName("category").item(0).getTextContent());
+                }
             }
 
             generateXMLFile(outputDoc, "DOM/noticias_" + channelTitle + ".xml");
@@ -114,14 +120,14 @@ class DOMParser {
             JSONObject xmlJSONObj = JSONML.toJSONObject(XML);
 
             try (FileWriter file = new FileWriter(filename + ".json")) {
- 
+
                 file.write(xmlJSONObj.toString());
                 file.flush();
-     
+
             } catch (IOException e) {
                 e.printStackTrace();
             }
-        } catch (JSONException  e) {
+        } catch (JSONException e) {
             e.printStackTrace();
         }
     }

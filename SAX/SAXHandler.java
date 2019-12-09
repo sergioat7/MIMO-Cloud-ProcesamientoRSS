@@ -90,7 +90,7 @@ public class SAXHandler extends DefaultHandler {
 
     @Override
     public void endElement(String uri, String localName, String qName) throws SAXException {
-        
+
         if (qName.equalsIgnoreCase("channel")) {
             this.generateXMLFile();
         }
